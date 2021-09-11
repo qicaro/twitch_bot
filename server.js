@@ -1,4 +1,7 @@
 require("dotenv").config();
+const pasteBin = require("./pastebin");
+
+//import PasteBin from './pastebin.js';
 
 const tmi = require('tmi.js');
 
@@ -13,13 +16,11 @@ const config = {
     channels: process.env.CHANNELS.split(";")
 }
 
-console.log();
-
 const client = new tmi.Client(config);
-  
-  client.connect();
 
-  client.on('message', async (channel, context, message) => {
+client.connect();
+
+client.on('message', async (channel, context, message) => {
 
     const isMod = context['user-type'] == "mod";
 
@@ -27,27 +28,42 @@ const client = new tmi.Client(config);
 
         const commandArguments = message.split(" ");
 
-        if(message.startsWith("!ban"))
-        {
+        if (message.startsWith("!ban ")) {
             console.log("Channels to ban => " + config.channels.length);
-            for(let i = 0; i < config.channels.length; i++)
-            {
+            for (let i = 0; i < config.channels.length; i++) {
                 let channelToExecute = config.channels[i];
                 console.log(process.env.TWITCH_BOT_USERNAME + "is banning " + commandArguments[1] + " at " + channelToExecute + " channel");
-                
+
                 client.ban(channelToExecute, commandArguments[1], "")
-                .then(function() {
-                    console.log("Successfully banned " + user.username + " on " + channel + "!");
-                }, function(err) {
-                    console.log(err);
-                });
+                    .then(function () {
+                        console.log("Successfully banned " + user.username + " on " + channel + "!");
+                    }, function (err) {
+                        console.log(err);
+                    });
             }
+        }
+        else if (message.startsWith("!banpastebin ")) {
+            pasteBin.GetBansFromText(commandArguments[1])
+                .then(function (banList) {
+                    for (let j = 0; j < config.channels.length; j++) {
+                        let channelToExecute = config.channels[j];
+
+                        for (let i = 0; i < banList.length; i++) {
+                            client.ban(channelToExecute, banList[i], "")
+                                .then(function () {
+                                    console.log("Successfully banned " + user.username + " on " + channel + "!");
+                                }, function (err) {
+                                    console.log(err);
+                                });
+                        }
+                    }
+                });
         }
     }
 
     console.log('channel', {
-      channel,
-      user: context.username,
-      message
+        channel,
+        user: context.username,
+        message
     });
-  });
+});
