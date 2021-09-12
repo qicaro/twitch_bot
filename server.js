@@ -64,6 +64,8 @@ function ExecuteBan(indexChannel, indexBanList) {
                 console.log("Successfully banned " + user.username + " on " + channel + "!");
                 ExecuteBan(indexChannel, indexBanList+1);
             }, function (err) {
+                console.log("Failed to ban " + user.username + " on " + channel + "!");
+                console.log(err);
                 ExecuteBan(indexChannel, indexBanList+1);
             });
     }
