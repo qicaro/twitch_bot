@@ -1,6 +1,8 @@
 require("dotenv").config();
 const pasteBin = require("./pastebin");
 
+pasteBin.getBansFromText("https://pastebin.com/raw/gi637rMG");
+
 //import PasteBin from './pastebin.js';
 
 const tmi = require('tmi.js');
@@ -60,10 +62,4 @@ client.on('message', async (channel, context, message) => {
                 });
         }
     }
-
-    console.log('channel', {
-        channel,
-        user: context.username,
-        message
-    });
 });

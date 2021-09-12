@@ -8,7 +8,7 @@ const apiDevKey = process.env.PASTEBIN_API_DEV_KEY;
 
 
 const functions = {
-    GetBansFromText: GetBansFromText,
+    getBansFromText: getBansFromText,
 
 }
 
@@ -76,17 +76,37 @@ async function getRawText(url) {
             })
     });
 }
-async function GetBansFromText(url) {
+async function getBansFromText(url) {
     return new Promise(async (resolve, reject) => {
-        getRawText(url)
+        getRawTextWithoutAPI(url)
             .then(function (text) {
                 let lines = text.split("\r\n");
                 let banList = [];
                 for (let i = 0; i < lines.length; i++) {
                     banList.push(lines[i].split(" ")[1]);
                 }
+                console.log(banList);
                 resolve(banList);
             });
+    });
+}
+
+async function getRawTextWithoutAPI(url) {
+    return new Promise(async (resolve, reject) => {
+        var config = {
+            method: 'get',
+            url: url,
+        };
+
+        await axios.request(config)
+            .then(function (response) {
+                console.log("Successful to get text");
+                resolve(response.data)
+            })
+            .catch(function (error) {
+                console.log("Failed to get text");
+                reject(error);
+            })
     });
 }
 
