@@ -2,7 +2,7 @@ require("dotenv").config();
 const pasteBin = require("./pastebin");
 
 let cacheBanList = [];
-const attempToConnect = false;
+let attempToConnect = false;
 
 //import PasteBin from './pastebin.js';
 
