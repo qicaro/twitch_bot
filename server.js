@@ -1,7 +1,7 @@
 require("dotenv").config();
 const pasteBin = require("./pastebin");
 
-pasteBin.getBansFromText("https://pastebin.com/raw/gi637rMG");
+let cacheBanList = [];
 
 //import PasteBin from './pastebin.js';
 
@@ -47,19 +47,32 @@ client.on('message', async (channel, context, message) => {
         else if (message.startsWith("!banpastebin ")) {
             pasteBin.getBansFromText(commandArguments[1])
                 .then(function (banList) {
-                    for (let j = 0; j < config.channels.length; j++) {
-                        let channelToExecute = config.channels[j];
-
-                        for (let i = 0; i < banList.length; i++) {
-                            client.ban(channelToExecute, banList[i], "")
-                                .then(function () {
-                                    console.log("Successfully banned " + user.username + " on " + channel + "!");
-                                }, function (err) {
-                                    console.log(err);
-                                });
-                        }
-                    }
+                    cacheBanList = banList;
+                    ExecuteBan(0, 0);
                 });
         }
     }
 });
+
+function ExecuteBan(indexChannel, indexBanList) {
+    let channelToExecute = config.channels[indexChannel];
+    if (indexBanList < cacheBanList.length) {
+        let userToBan = cacheBanList[indexBanList];
+        console.log("Attempt to ban " + userToBan + " at @" + channelToExecute)
+        client.ban(channelToExecute, userToBan, "")
+            .then(function () {
+                console.log("Successfully banned " + user.username + " on " + channel + "!");
+                ExecuteBan(indexChannel, indexBanList+1);
+            }, function (err) {
+                ExecuteBan(indexChannel, indexBanList+1);
+            });
+    }
+    else{
+        indexChannel = indexChannel + 1;
+        channelToExecute = config.channels[indexChannel];
+        console.log("starting bans into " + channelToExecute)
+        if (indexChannel < config.channels.length) {
+            ExecuteBan(indexChannel, 0);
+        }
+    }
+}
