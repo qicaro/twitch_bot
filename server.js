@@ -45,7 +45,7 @@ client.on('message', async (channel, context, message) => {
             }
         }
         else if (message.startsWith("!banpastebin ")) {
-            pasteBin.GetBansFromText(commandArguments[1])
+            pasteBin.getBansFromText(commandArguments[1])
                 .then(function (banList) {
                     for (let j = 0; j < config.channels.length; j++) {
                         let channelToExecute = config.channels[j];
