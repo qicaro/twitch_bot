@@ -2,6 +2,7 @@ require("dotenv").config();
 const pasteBin = require("./pastebin");
 
 let cacheBanList = [];
+const attempToConnect = false;
 
 //import PasteBin from './pastebin.js';
 
@@ -62,22 +63,31 @@ function ExecuteBan(indexChannel, indexBanList) {
         let userToBan = cacheBanList[indexBanList];
         console.log("Attempt to ban " + userToBan + " at @" + channelToExecute)
         console.log(client.readyState());
-        if(client.readyState() == "OPEN"){
+        if (client.readyState() == "OPEN") {
+            attempToConnect = false;
             client.ban(channelToExecute, userToBan, "")
-            .then(function () {
-                console.log("Successfully banned " + userToBan + " on " + channelToExecute + "!");
-                ExecuteBan(indexChannel, indexBanList+1);
-            }, function (err) {
-                console.log("Failed to ban " + userToBan + " on " + channelToExecute + "!");
-                console.log(err);
-                ExecuteBan(indexChannel, indexBanList+1);
-            });
+                .then(function () {
+                    console.log("Successfully banned " + userToBan + " on " + channelToExecute + "!");
+                    ExecuteBan(indexChannel, indexBanList + 1);
+                }, function (err) {
+                    console.log("Failed to ban " + userToBan + " on " + channelToExecute + "!");
+                    console.log(err);
+                    ExecuteBan(indexChannel, indexBanList + 1);
+                });
         }
-        else{
-           setInterval(ExecuteBan(indexChannel, indexBanList), 1000);
+        else if (client.readyState() == "CLOSED") {
+            client.connect();
+            if (!attempToConnect) {
+                attempToConnect = true;
+                setInterval(ExecuteBan(indexChannel, indexBanList), 1000);
+                setTimeout(function () {
+                    ExecuteBan(indexChannel, indexBanList);
+                    attempToConnect = false;
+                }, 5000);
+            }
         }
     }
-    else{
+    else {
         indexChannel = indexChannel + 1;
         channelToExecute = config.channels[indexChannel];
         console.log("starting bans into " + channelToExecute)
