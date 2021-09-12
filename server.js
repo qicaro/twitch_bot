@@ -61,10 +61,10 @@ function ExecuteBan(indexChannel, indexBanList) {
         console.log("Attempt to ban " + userToBan + " at @" + channelToExecute)
         client.ban(channelToExecute, userToBan, "")
             .then(function () {
-                console.log("Successfully banned " + userToBan + " on " + channel + "!");
+                console.log("Successfully banned " + userToBan + " on " + channelToExecute + "!");
                 ExecuteBan(indexChannel, indexBanList+1);
             }, function (err) {
-                console.log("Failed to ban " + userToBan + " on " + channel + "!");
+                console.log("Failed to ban " + userToBan + " on " + channelToExecute + "!");
                 console.log(err);
                 ExecuteBan(indexChannel, indexBanList+1);
             });
