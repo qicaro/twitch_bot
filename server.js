@@ -22,6 +22,8 @@ const client = new tmi.Client(config);
 
 client.connect();
 
+console.log(client);
+
 client.on('message', async (channel, context, message) => {
 
     const isMod = context['user-type'] == "mod";
@@ -59,7 +61,9 @@ function ExecuteBan(indexChannel, indexBanList) {
     if (indexBanList < cacheBanList.length) {
         let userToBan = cacheBanList[indexBanList];
         console.log("Attempt to ban " + userToBan + " at @" + channelToExecute)
-        client.ban(channelToExecute, userToBan, "")
+        console(client.readyState());
+        if(client.readyState() == "OPEN"){
+            client.ban(channelToExecute, userToBan, "")
             .then(function () {
                 console.log("Successfully banned " + userToBan + " on " + channelToExecute + "!");
                 ExecuteBan(indexChannel, indexBanList+1);
@@ -68,6 +72,10 @@ function ExecuteBan(indexChannel, indexBanList) {
                 console.log(err);
                 ExecuteBan(indexChannel, indexBanList+1);
             });
+        }
+        else{
+            ExecuteBan(indexChannel, indexBanList);
+        }
     }
     else{
         indexChannel = indexChannel + 1;
