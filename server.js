@@ -79,7 +79,6 @@ function ExecuteBan(indexChannel, indexBanList) {
             client.connect();
             if (!attempToConnect) {
                 attempToConnect = true;
-                setInterval(ExecuteBan(indexChannel, indexBanList), 1000);
                 setTimeout(function () {
                     ExecuteBan(indexChannel, indexBanList);
                     attempToConnect = false;
