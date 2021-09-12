@@ -76,8 +76,9 @@ function ExecuteBan(indexChannel, indexBanList) {
                 });
         }
         else if (client.readyState() == "CLOSED") {
-            client.connect();
             if (!attempToConnect) {
+                client.connect();
+                console.log("reconnecting to twitch");
                 attempToConnect = true;
                 setTimeout(function () {
                     ExecuteBan(indexChannel, indexBanList);
