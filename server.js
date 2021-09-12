@@ -74,8 +74,7 @@ function ExecuteBan(indexChannel, indexBanList) {
             });
         }
         else{
-            client.connect();
-            ExecuteBan(indexChannel, indexBanList);
+           setInterval(ExecuteBan(indexChannel, indexBanList), 1000);
         }
     }
     else{
