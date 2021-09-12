@@ -74,6 +74,7 @@ function ExecuteBan(indexChannel, indexBanList) {
             });
         }
         else{
+            client.connect();
             ExecuteBan(indexChannel, indexBanList);
         }
     }
