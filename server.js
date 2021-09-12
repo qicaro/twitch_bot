@@ -61,7 +61,7 @@ function ExecuteBan(indexChannel, indexBanList) {
     if (indexBanList < cacheBanList.length) {
         let userToBan = cacheBanList[indexBanList];
         console.log("Attempt to ban " + userToBan + " at @" + channelToExecute)
-        console(client.readyState());
+        console.log(client.readyState());
         if(client.readyState() == "OPEN"){
             client.ban(channelToExecute, userToBan, "")
             .then(function () {
